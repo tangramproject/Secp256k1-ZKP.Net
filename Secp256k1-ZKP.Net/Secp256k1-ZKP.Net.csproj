@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <RootNamespace>Secp256k1_ZKP.Net</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Examples\.DS_Store" />
+    <None Remove="Examples\bin\.DS_Store" />
+    <None Remove="Examples\obj\Debug\netcoreapp2.2\Examples.assets.cache" />
+    <None Remove="Examples\bin\Debug\netcoreapp2.2\Examples.deps.json" />
+  </ItemGroup>
+</Project>
