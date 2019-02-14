@@ -180,18 +180,13 @@ namespace Secp256k1_ZKP.Net
         /// </summary>
         /// <returns>The public key.</returns>
         /// <param name="commit">Commit.</param>
-        public unsafe byte[] ToPublicKey(byte[] commit)
+        public byte[] ToPublicKey(byte[] commit)
         {
             if (commit.Length < Constant.PEDERSEN_COMMITMENT_SIZE)
                 throw new ArgumentException($"{nameof(commit)} must be {Constant.PEDERSEN_COMMITMENT_SIZE} bytes");
 
             var pubOut = new byte[Constant.PUBLIC_KEY_SIZE];
-
-            fixed (byte* oubPtr = &MemoryMarshal.GetReference(pubOut.AsSpan()),
-                commitPtr = &MemoryMarshal.GetReference(commit.AsSpan()))
-            {
-                return secp256k1_pedersen_commitment_to_pubkey(Context, oubPtr, commitPtr) == 1 ? pubOut : null;
-            }
+            return secp256k1_pedersen_commitment_to_pubkey(Context, pubOut, commit) == 1 ? pubOut : null;
         }
 
         public void Dispose()
