@@ -11,7 +11,7 @@ namespace Secp256k1_ZKP.Net
 #if __IOS__ || (UNITY_IOS && !UNITY_EDITOR)
             private const string nativeLibrary = "__Internal";
 #else
-        private const string nativeLibrary = "libsecp256k1";
+        private const string nativeLibrary = "libsecp256k1zkp";
 #endif
 
         [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
@@ -24,12 +24,10 @@ namespace Secp256k1_ZKP.Net
         internal static extern int secp256k1_ec_seckey_verify(IntPtr ctx, byte[] seed32);
 
         [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
-        // internal static extern int secp256k1_ecdsa_verify(IntPtr ctx, byte[] sig, byte[] msg32, byte[] pubkey);
-        unsafe internal static extern int secp256k1_ecdsa_verify(IntPtr ctx, void* sig, void* msg32, void* pubkey);
+        internal static extern int secp256k1_ecdsa_verify(IntPtr ctx, byte[] sig, byte[] msg32, byte[] pubkey);
 
         [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
-        //internal static extern int secp256k1_ecdsa_sign(IntPtr ctx, byte[] sig, byte[] msg32, byte[] seckey, IntPtr noncefp, IntPtr ndata);
-        unsafe internal static extern int secp256k1_ecdsa_sign(IntPtr ctx, void* sig, void* msg32, void* seckey, IntPtr noncefp, void* ndata);
+        internal static extern int secp256k1_ecdsa_sign(IntPtr ctx, byte[] sig, byte[] msg32, byte[] seckey, IntPtr noncefp, IntPtr ndata);
 
         [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int secp256k1_ec_pubkey_serialize(IntPtr ctx, byte[] output, ref uint outputlen, byte[] pubkey, uint flags);
@@ -45,7 +43,7 @@ namespace Secp256k1_ZKP.Net
 #if __IOS__ || (UNITY_IOS && !UNITY_EDITOR)
             private const string nativeLibrary = "__Internal";
 #else
-        private const string nativeLibrary = "libsecp256k1";
+        private const string nativeLibrary = "libsecp256k1zkp";
 #endif
 
         [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
@@ -76,8 +74,7 @@ namespace Secp256k1_ZKP.Net
         internal static extern int secp256k1_blind_switch(IntPtr ctx, byte[] blind_switch, byte[] blind, ulong value, byte[] value_gen, byte[] blind_gen, byte[] switch_pubkey);
 
         [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
-        // internal static extern int secp256k1_pedersen_commitment_to_pubkey(IntPtr ctx, byte[] pubkey, byte[] commit);
-        unsafe internal static extern int secp256k1_pedersen_commitment_to_pubkey(IntPtr ctx, void* pubkey, void* commit);
+        internal static extern int secp256k1_pedersen_commitment_to_pubkey(IntPtr ctx, byte[] pubkey, byte[] commit);
     }
 
     [Flags]
