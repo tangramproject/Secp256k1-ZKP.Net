@@ -7,15 +7,16 @@ namespace Secp256k1_ZKP.Net.Test
     public class Tests
     {
         [Fact]
-        public void Commit_Parse()
+        public void Commit_Parse_Serialize()
         {
             using (var secp256k1 = new Secp256k1())
             using (var pedersen = new Pedersen())
             {
                 var commit = pedersen.Commit(5, secp256k1.GetSecretKey());
                 var parsed = pedersen.CommitParse(commit);
+                var ser = pedersen.CommitSerialize(parsed);
 
-                Assert.Equal(parsed, commit);
+                Assert.Equal(ser, commit);
             }
         }
 

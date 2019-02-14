@@ -42,8 +42,6 @@ namespace Secp256k1_ZKP.Net
             if (input.Length < Constant.PEDERSEN_COMMITMENT_SIZE)
                 throw new ArgumentException($"{nameof(input)} must be {Constant.PEDERSEN_COMMITMENT_SIZE} bytes");
 
-            // TODO 
-            // changed output PEDERSEN_COMMITMENT_SIZE_INTERNAL.. testing commit to public key function..
             var output = new byte[Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL];
             return secp256k1_pedersen_commitment_parse(Context, output, input) == 1 ? output : null;
         }
@@ -188,8 +186,6 @@ namespace Secp256k1_ZKP.Net
                 throw new ArgumentException($"{nameof(commit)} must be {Constant.PEDERSEN_COMMITMENT_SIZE} bytes");
 
             var pubOut = new byte[Constant.PUBLIC_KEY_SIZE];
-
-            commit = CommitParse(commit);
 
             fixed (byte* oubPtr = &MemoryMarshal.GetReference(pubOut.AsSpan()),
                 commitPtr = &MemoryMarshal.GetReference(commit.AsSpan()))

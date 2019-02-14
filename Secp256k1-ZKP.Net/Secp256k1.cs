@@ -63,7 +63,7 @@ namespace Secp256k1_ZKP.Net
         public unsafe byte[] Sign(byte[] msg32, byte[] seckey)
         {
             if (msg32.Length < Constant.MESSAGE_SIZE)
-                throw new ArgumentException($"{nameof(msg32)} must be {Constant.MESSAGE_SIZE} bytes");
+            throw new ArgumentException($"{nameof(msg32)} must be {Constant.MESSAGE_SIZE} bytes");
 
             if (seckey.Length < Constant.SECRET_KEY_SIZE)
                 throw new ArgumentException($"{nameof(seckey)} must be {Constant.SECRET_KEY_SIZE} bytes");
@@ -91,10 +91,10 @@ namespace Secp256k1_ZKP.Net
                 throw new ArgumentException($"{nameof(sig)} must be {Constant.SIGNATURE_SIZE} bytes");
 
             if (msg32.Length < Constant.MESSAGE_SIZE)
-                throw new ArgumentException($"{nameof(msg32)} must be {Constant.MESSAGE_SIZE} bytes");
+            throw new ArgumentException($"{nameof(msg32)} must be {Constant.MESSAGE_SIZE} bytes");
 
-            //if (pubkey.Length < Constant.PUBLIC_KEY_SIZE)
-            //throw new ArgumentException($"{nameof(pubkey)} must be {Constant.PUBLIC_KEY_SIZE} bytes");
+            if (pubkey.Length < Constant.PUBLIC_KEY_SIZE)
+            throw new ArgumentException($"{nameof(pubkey)} must be {Constant.PUBLIC_KEY_SIZE} bytes");
 
             fixed (byte* sigPtr = &MemoryMarshal.GetReference(sig.AsSpan()),
                 msgPtr = &MemoryMarshal.GetReference(msg32.AsSpan()),
