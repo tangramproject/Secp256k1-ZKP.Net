@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Xunit;
 
 namespace Secp256k1_ZKP.Net.Test
@@ -132,18 +133,27 @@ namespace Secp256k1_ZKP.Net.Test
             using (var secp256k1 = new Secp256k1())
             using (var pedersen = new Pedersen())
             {
+                string ToHex(byte[] data)
+                {
+                    return BitConverter.ToString(data).Replace("-", string.Empty);
+                }
+
                 var blinding = secp256k1.GetSecretKey();
-                var commit = pedersen.Commit(0x40, blinding);
+                var commit = pedersen.Commit(0, blinding);
 
-                var msg = new byte[] { 
-                    0x39, 0x41, 0x14, 0x6C, 0x6F, 0x4C, 0x41, 0x14, 0x36, 0x3D, 0x6E, 0x43, 0x48, 0x3D, 0x6D, 0x15, 
-                    0x15, 0x15, 0x15, 0x15, 0x15, 0x15, 0x15, 0x15, 0x15, 0x15, 0x15, 0x15, 0x15, 0x15, 0x15, 0x15 };
+                var msg = "Message for signing";
+                var msgBytes = Encoding.UTF8.GetBytes(msg);
+                var msgHash = System.Security.Cryptography.SHA256.Create().ComputeHash(msgBytes);
 
-                var sig = secp256k1.Sign(msg, blinding);
+                var sig = secp256k1.Sign(msgHash, blinding);
 
                 var pubKey = pedersen.ToPublicKey(commit);
 
-                Assert.True(secp256k1.Verify(sig, msg, pubKey));
+                Assert.True(secp256k1.Verify(sig, msgHash, pubKey));
+
+                var actualPubKey = secp256k1.PublicKeyCreate(blinding);
+
+                Assert.Equal(ToHex(pubKey), ToHex(actualPubKey));
             }
         }
 
