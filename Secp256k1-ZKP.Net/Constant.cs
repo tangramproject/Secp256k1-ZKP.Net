@@ -16,6 +16,7 @@ namespace Secp256k1_ZKP.Net
         public const int PEDERSEN_COMMITMENT_SIZE_INTERNAL = 64;
         public const int SECRET_KEY_SIZE = 32;
         public const int PUBLIC_KEY_SIZE = 64;
+        public const int PUBLIC_KEY_COMPRESSED_SIZE = 33;
         public const int MESSAGE_SIZE = 32;
         public const int SIGNATURE_SIZE = 64;
         public const int MAX_SIGNATURE_SIZE = 72;

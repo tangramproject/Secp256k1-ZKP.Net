@@ -22,7 +22,7 @@ namespace Examples
                 var sig = secp256k1.Sign(msgHash, blinding);
                 var pubKey = pedersen.ToPublicKey(commit);
 
-                pubKey = secp256k1.PubKeySerialize(pubKey, Flags.SECP256K1_EC_COMPRESSED);
+                // pubKey = secp256k1.PubKeySerialize(pubKey, Flags.SECP256K1_EC_COMPRESSED);
 
                 // Fails.....
                 var verified1 = secp256k1.Verify(sig, msgHash, pubKey);

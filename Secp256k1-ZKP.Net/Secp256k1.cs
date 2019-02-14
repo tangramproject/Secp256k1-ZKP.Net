@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static Secp256k1_ZKP.Net.Secp256k1Native;
 
@@ -60,10 +61,10 @@ namespace Secp256k1_ZKP.Net
         /// <returns>The sign.</returns>
         /// <param name="msg32">Msg32.</param>
         /// <param name="seckey">Seckey.</param>
-        public unsafe byte[] Sign(byte[] msg32, byte[] seckey)
+        public unsafe byte[] Sign(byte[] msg32, Span<byte> seckey)
         {
             if (msg32.Length < Constant.MESSAGE_SIZE)
-            throw new ArgumentException($"{nameof(msg32)} must be {Constant.MESSAGE_SIZE} bytes");
+                throw new ArgumentException($"{nameof(msg32)} must be {Constant.MESSAGE_SIZE} bytes");
 
             if (seckey.Length < Constant.SECRET_KEY_SIZE)
                 throw new ArgumentException($"{nameof(seckey)} must be {Constant.SECRET_KEY_SIZE} bytes");
@@ -71,9 +72,10 @@ namespace Secp256k1_ZKP.Net
             var sigOut = new byte[64];
 
             fixed (byte* sigPtr = &MemoryMarshal.GetReference(sigOut.AsSpan()),
-                msgPtr = &MemoryMarshal.GetReference(msg32.AsSpan()),
-                secPtr = &MemoryMarshal.GetReference(seckey.AsSpan()))
+                msgPtr = &MemoryMarshal.GetReference(msg32.AsSpan()))
             {
+                var secPtr = Unsafe.AsPointer(ref seckey.Slice(seckey.Length - 32)[0]);
+
                 return secp256k1_ecdsa_sign(Context, sigPtr, msgPtr, secPtr, IntPtr.Zero, IntPtr.Zero.ToPointer()) == 1 ? sigOut : null;
             }
         }
@@ -85,16 +87,19 @@ namespace Secp256k1_ZKP.Net
         /// <param name="sig">Sig.</param>
         /// <param name="msg32">Msg32.</param>
         /// <param name="pubkey">Pubkey.</param>
-        public unsafe bool Verify(byte[] sig, byte[] msg32, byte[] pubkey)
+        public unsafe bool Verify(byte[] sig, byte[] msg32, byte[] pubkey, Flags flags = Flags.SECP256K1_EC_UNCOMPRESSED)
         {
+            var compressed = flags.HasFlag(Flags.SECP256K1_EC_COMPRESSED);
+            var serializedPubKeyLength = compressed ? Constant.SERIALIZED_COMPRESSED_PUBKEY_LENGTH : Constant.SERIALIZED_UNCOMPRESSED_PUBKEY_LENGTH;
+
             if (sig.Length < Constant.SIGNATURE_SIZE)
                 throw new ArgumentException($"{nameof(sig)} must be {Constant.SIGNATURE_SIZE} bytes");
 
             if (msg32.Length < Constant.MESSAGE_SIZE)
-            throw new ArgumentException($"{nameof(msg32)} must be {Constant.MESSAGE_SIZE} bytes");
+                throw new ArgumentException($"{nameof(msg32)} must be {Constant.MESSAGE_SIZE} bytes");
 
-            if (pubkey.Length < Constant.PUBLIC_KEY_SIZE)
-            throw new ArgumentException($"{nameof(pubkey)} must be {Constant.PUBLIC_KEY_SIZE} bytes");
+            if (pubkey.Length < serializedPubKeyLength)
+                throw new ArgumentException($"{nameof(pubkey)} must be {serializedPubKeyLength} bytes");
 
             fixed (byte* sigPtr = &MemoryMarshal.GetReference(sig.AsSpan()),
                 msgPtr = &MemoryMarshal.GetReference(msg32.AsSpan()),
