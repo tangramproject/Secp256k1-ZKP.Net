@@ -60,7 +60,6 @@ namespace Secp256k1_ZKP.Net.Test
                 // This will fail.. the values add up to 0. But the keys don't add to 0..
                 Assert.False(pedersen.VerifyCommitSum(new List<byte[]> { Commit(3, oneKey), Commit(2, oneKey) }, new List<byte[]> { Commit(5, oneKey) }));
 
-
                 // To add the keys to 0 we need to sum on both side..
                 var twoKey = pedersen.BlindSum(new List<byte[]> { oneKey, oneKey }, new List<byte[]> { });
 

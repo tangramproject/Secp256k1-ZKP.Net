@@ -3,6 +3,20 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <RootNamespace>Secp256k1_ZKP.Net</RootNamespace>
+    <PackageId>Secp256k1.ZKP.Net</PackageId>
+    <PackageVersion>1.0.1</PackageVersion>
+    <Authors>pingpongsneak</Authors>
+    <PackageIconUrl>https://avatars1.githubusercontent.com/u/37107370</PackageIconUrl>
+    <NeutralLanguage>en-ZA</NeutralLanguage>
+    <PackageLicenseUrl>https://github.com/tangramproject/Secp256k1-ZKP.Net/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Owners>Tangram Inc</Owners>
+    <PackageProjectUrl>https://github.com/tangramproject/Secp256k1-ZKP.Net</PackageProjectUrl>
+    <PackageTags>Secp256k1 libsecp256k1 Tangram ECDSA bitcoin Grin MimbleWimble</PackageTags>
+    <Title>Secp256k1.ZKP.Net</Title>
+    <Description>This package contains platform-specific native code builds of secp256k1. Included: osx-x64/libsecp256k1.dylib</Description>
+    <PackOnBuild>true</PackOnBuild>
+    <DevelopmentDependency>true</DevelopmentDependency>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -16,5 +30,9 @@
     <None Remove="Examples\bin\.DS_Store" />
     <None Remove="Examples\obj\Debug\netcoreapp2.2\Examples.assets.cache" />
     <None Remove="Examples\bin\Debug\netcoreapp2.2\Examples.deps.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
+    <PackageReference Include="Secp256k1.ZKP" Version="1.0.4" />
   </ItemGroup>
 </Project>
