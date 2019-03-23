@@ -11,7 +11,7 @@ namespace Secp256k1_ZKP.Net
 #if __IOS__ || (UNITY_IOS && !UNITY_EDITOR)
             private const string nativeLibrary = "__Internal";
 #else
-        private const string nativeLibrary = "libsecp256k1zkp";
+        private const string nativeLibrary = "libsecp256k1";
 #endif
 
         [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
@@ -43,7 +43,7 @@ namespace Secp256k1_ZKP.Net
 #if __IOS__ || (UNITY_IOS && !UNITY_EDITOR)
             private const string nativeLibrary = "__Internal";
 #else
-        private const string nativeLibrary = "libsecp256k1zkp";
+        private const string nativeLibrary = "libsecp256k1";
 #endif
 
         [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
