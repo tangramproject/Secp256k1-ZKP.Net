@@ -77,6 +77,31 @@ namespace Secp256k1_ZKP.Net
         internal static extern int secp256k1_pedersen_commitment_to_pubkey(IntPtr ctx, byte[] pubkey, byte[] commit);
     }
 
+    [SuppressUnmanagedCodeSecurity]
+    internal static class RangeProofNative
+    {
+#if __IOS__ || (UNITY_IOS && !UNITY_EDITOR)
+            private const string nativeLibrary = "__Internal";
+#else
+        private const string nativeLibrary = "libsecp256k1";
+#endif
+
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_rangeproof_info(IntPtr ctx, int exp, int mantissa, ulong min_value, ulong max_value, byte[] proof, uint plen);
+
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_rangeproof_rewind(IntPtr ctx, byte[] blind_out, ulong value_out, byte[] message_out, uint outlen, byte[] nonce, ulong min_value, 
+            ulong max_value, byte[] commit, byte[] proof, uint plen, byte[] extra_commit, uint extra_commit_len, byte[] gen);
+           
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_rangeproof_verify(IntPtr ctx, ulong min_value, ulong max_value, byte[] commit, byte[] proof, uint plen, byte[] extra_commit, uint extra_commit_len, byte[] gen);
+
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_rangeproof_sign(IntPtr ctx, byte[] proof, uint plen, ulong min_value, byte[] commit, byte[] blind, byte[] nonce, int exp, int min_bits, 
+            ulong value, byte[] message, uint msg_len, byte[] extra_commit, uint extra_commit_len, byte[] gen);
+
+    }
+
     [Flags]
     public enum Flags : uint
     {
