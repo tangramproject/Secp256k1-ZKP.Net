@@ -65,8 +65,8 @@ namespace Secp256k1_ZKP.Net
             if (blind.Length < Constant.BLIND_LENGTH)
                 throw new ArgumentException($"{nameof(blind)} must be {Constant.BLIND_LENGTH} bytes");
 
-            if (commit.Length < Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL)
-                throw new ArgumentException($"{nameof(commit)} must be {Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL} bytes");
+            if (commit.Length < Constant.PEDERSEN_COMMITMENT_SIZE)
+                throw new ArgumentException($"{nameof(commit)} must be {Constant.PEDERSEN_COMMITMENT_SIZE} bytes");
 
             bool success = false;
             byte[] proof = new byte[Constant.MAX_PROOF_SIZE];
@@ -78,12 +78,12 @@ namespace Secp256k1_ZKP.Net
             {
                 commit = pedersen.CommitParse(commit);
 
-                while (success)
+                while (success == false)
                 {
                     success = secp256k1_rangeproof_sign(
                                 Context,
                                 proof,
-                                plen,
+                                ref plen,
                                 min,
                                 commit,
                                 blind,
@@ -94,7 +94,7 @@ namespace Secp256k1_ZKP.Net
                                 msg,
                                 (uint)msg.Length,
                                 extraCommit,
-                                (uint)extraCommit.Length,
+                                0,
                                 Constant.GENERATOR_H) == 1;
                 }
 
@@ -118,10 +118,10 @@ namespace Secp256k1_ZKP.Net
 
             var success = secp256k1_rangeproof_info(
                             Context,
-                            exp,
-                            mantissa,
-                            min,
-                            max,
+                            ref exp,
+                            ref mantissa,
+                            ref min,
+                            ref max,
                             @struct.proof,
                             @struct.plen) == 1;
 
@@ -147,14 +147,14 @@ namespace Secp256k1_ZKP.Net
         /// <param name="nonce">Nonce.</param>
         public ProofInfoStruct Rewind(byte[] commit, ProofStruct @struct, byte[] nonce)
         {
-            if (commit.Length < Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL)
-                throw new ArgumentException($"{nameof(commit)} must be {Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL} bytes");
+            if (commit.Length < Constant.PEDERSEN_COMMITMENT_SIZE)
+                throw new ArgumentException($"{nameof(commit)} must be {Constant.PEDERSEN_COMMITMENT_SIZE} bytes");
 
             if (nonce.Length < Constant.SECRET_KEY_SIZE)
                 throw new ArgumentException($"{nameof(nonce)} must be {Constant.SECRET_KEY_SIZE} bytes");
 
             ulong value = 0, min = 0, max = 0;
-            byte[] blind = new byte[32];
+            byte[] blindOut = new byte[32];
             byte[] message = new byte[Constant.PROOF_MSG_SIZE];
             uint mlen = Constant.PROOF_MSG_SIZE;
             byte[] extraCommit = new byte[33];
@@ -165,27 +165,27 @@ namespace Secp256k1_ZKP.Net
 
                 var success = secp256k1_rangeproof_rewind(
                                 Context,
-                                blind,
-                                value,
+                                blindOut,
+                                ref value,
                                 message,
-                                mlen,
+                                ref mlen,
                                 nonce,
-                                min,
-                                max,
+                                ref min,
+                                ref max,
                                 commit,
                                 @struct.proof,
                                 @struct.plen,
                                 extraCommit,
-                                (uint)extraCommit.Length,
+                                0,
                                 Constant.GENERATOR_H
                                 ) == 1;
 
                 return new ProofInfoStruct(
                             success,
-                            0,
+                            value,
                             message,
-                            blind,
-                            0,
+                            blindOut,
+                            mlen,
                             min,
                             max,
                             0,
@@ -201,8 +201,8 @@ namespace Secp256k1_ZKP.Net
         /// <param name="struct">Proof.</param>
         public (ulong min, ulong max) Verify(byte[] commit, ProofStruct @struct)
         {
-            if (commit.Length < Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL)
-                throw new ArgumentException($"{nameof(commit)} must be {Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL} bytes");
+            if (commit.Length < Constant.PEDERSEN_COMMITMENT_SIZE)
+                throw new ArgumentException($"{nameof(commit)} must be {Constant.PEDERSEN_COMMITMENT_SIZE} bytes");
 
             ulong min = 0, max = 0;
             byte[] extraCommit = new byte[33];
@@ -213,13 +213,14 @@ namespace Secp256k1_ZKP.Net
 
                 secp256k1_rangeproof_verify(
                     Context,
-                    min,
-                    max,
+                    ref min,
+                    ref max,
                     commit,
                     @struct.proof,
                     @struct.plen,
                     extraCommit,
-                    (uint)extraCommit.Length, Constant.GENERATOR_H);
+                    (uint)extraCommit.Length,
+                    Constant.GENERATOR_H);
             }
 
             return (min, max);
