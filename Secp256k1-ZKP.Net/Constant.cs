@@ -21,7 +21,8 @@ namespace Secp256k1_ZKP.Net
         public const int SIGNATURE_SIZE = 64;
         public const int MAX_SIGNATURE_SIZE = 72;
         public const int COMPACT_SIGNATURE_SIZE = 64;
-
+        public const int MAX_PROOF_SIZE = 5134;
+        public const int PROOF_MSG_SIZE = 2048;
         // Generator G
         public static byte[] GENERATOR_G = {
             0x79, 0xbe, 0x66, 0x7e, 0xf9, 0xdc, 0xbb, 0xac,
