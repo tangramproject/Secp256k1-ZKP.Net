@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <RootNamespace>Secp256k1_ZKP.Net</RootNamespace>
     <PackageId>Secp256k1.ZKP.Net</PackageId>
-    <PackageVersion>1.0.4</PackageVersion>
+    <PackageVersion>1.0.5</PackageVersion>
     <Authors>pingpongsneak</Authors>
     <PackageIconUrl>https://avatars1.githubusercontent.com/u/37107370</PackageIconUrl>
     <NeutralLanguage>en-ZA</NeutralLanguage>
