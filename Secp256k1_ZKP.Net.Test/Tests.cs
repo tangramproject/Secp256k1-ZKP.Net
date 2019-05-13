@@ -205,8 +205,8 @@ namespace Secp256k1_ZKP.Net.Test
                 var msgBytes = Encoding.UTF8.GetBytes(msg);
                 var msgHash = System.Security.Cryptography.SHA256.Create().ComputeHash(msgBytes);
                 var proof = rangeProof.Proof(0, 9, blinding, commit, msgHash);
-                var (min, max) = rangeProof.Verify(commit, proof);
-                Assert.Equal(0, (long)min);
+                var verified = rangeProof.Verify(commit, proof);
+                Assert.True(verified);
 
                 var proofInfo = rangeProof.Info(proof);
                 Assert.True(proofInfo.success);

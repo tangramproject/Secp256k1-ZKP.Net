@@ -199,11 +199,12 @@ namespace Secp256k1_ZKP.Net
         /// <returns>The verify.</returns>
         /// <param name="commit">Commit.</param>
         /// <param name="struct">Proof.</param>
-        public (ulong min, ulong max) Verify(byte[] commit, ProofStruct @struct)
+        public bool Verify(byte[] commit, ProofStruct @struct)
         {
             if (commit.Length < Constant.PEDERSEN_COMMITMENT_SIZE)
                 throw new ArgumentException($"{nameof(commit)} must be {Constant.PEDERSEN_COMMITMENT_SIZE} bytes");
 
+            bool success;
             ulong min = 0, max = 0;
             byte[] extraCommit = new byte[33];
 
@@ -211,7 +212,7 @@ namespace Secp256k1_ZKP.Net
             {
                 commit = pedersen.CommitParse(commit);
 
-                secp256k1_rangeproof_verify(
+                success = secp256k1_rangeproof_verify(
                     Context,
                     ref min,
                     ref max,
@@ -219,11 +220,11 @@ namespace Secp256k1_ZKP.Net
                     @struct.proof,
                     @struct.plen,
                     extraCommit,
-                    (uint)extraCommit.Length,
-                    Constant.GENERATOR_H);
+                    0,
+                    Constant.GENERATOR_H) == 1;
             }
 
-            return (min, max);
+            return success;
         }
 
         public void Dispose()
