@@ -233,5 +233,22 @@ namespace Secp256k1_ZKP.Net.Test
             }
         }
 
+        [Fact]
+        public void Bullet_Proof()
+        {
+            using (var secp256k1 = new Secp256k1())
+            using (var pedersen = new Pedersen())
+            using (var bulletProof = new BulletProof())
+            {
+                ulong value = 12234;
+                var blinding = secp256k1.GetSecretKey();
+                var commit = pedersen.Commit(value, blinding);
+                var @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), null, null);
+                var success = bulletProof.Verify(commit, @struct.proof, null);
+
+                Assert.True(success);
+            }
+        }
+
     }
 }

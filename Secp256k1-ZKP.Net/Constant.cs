@@ -11,7 +11,7 @@ namespace Secp256k1_ZKP.Net
         public const int SERIALIZED_COMPRESSED_PUBKEY_LENGTH = 33;
 
         // https://github.com/mimblewimble/rust-secp256k1-zkp/blob/master/src/constants.rs
-        //
+
         public const int PEDERSEN_COMMITMENT_SIZE = 33;
         public const int PEDERSEN_COMMITMENT_SIZE_INTERNAL = 64;
         public const int SECRET_KEY_SIZE = 32;
@@ -23,6 +23,9 @@ namespace Secp256k1_ZKP.Net
         public const int COMPACT_SIGNATURE_SIZE = 64;
         public const int MAX_PROOF_SIZE = 5134;
         public const int PROOF_MSG_SIZE = 2048;
+        public const int MAX_WIDTH = 1 << 20;
+        public const int SCRATCH_SPACE_SIZE = 256 * MAX_WIDTH;
+
         // Generator G
         public static byte[] GENERATOR_G = {
             0x79, 0xbe, 0x66, 0x7e, 0xf9, 0xdc, 0xbb, 0xac,
