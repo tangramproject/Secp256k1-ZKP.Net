@@ -21,16 +21,15 @@ namespace Secp256k1_ZKP.Net
             return secp256k1_bulletproof_generators_create(Context, Constant.GENERATOR_G, 256);
         }
 
-        public ProofStruct ProofSingle(ulong value, byte[] blind, byte[] nonce, byte[] extraCommit, byte[] msg)
+        public ProofStruct ProofSingle(ulong value, byte[] blind, byte[] nonce, byte[] rewindNonce, byte[] extraCommit, byte[] msg)
         {
             byte[] proof = new byte[Constant.MAX_PROOF_SIZE];
             int plen = Constant.MAX_PROOF_SIZE;
-
+            var extraCommitLen = extraCommit == null ? 0 : extraCommit.Length;
             byte[] tau_x = null;
             byte[] t_one = null;
             byte[] t_two = null;
             byte[] commits = null;
-            byte[] privateNonce = null;
 
             var blinds = new IntPtr[1];
 
@@ -60,9 +59,9 @@ namespace Secp256k1_ZKP.Net
                             Constant.GENERATOR_H,
                             64,
                             nonce,
-                            privateNonce,
+                            rewindNonce,
                             extraCommit,
-                            0,
+                            extraCommitLen,
                             msg);
 
             if (result == 1)
@@ -82,6 +81,7 @@ namespace Secp256k1_ZKP.Net
 
         public bool Verify(byte[] commit, byte[] proof, byte[] extraCommit)
         {
+            var extraCommitLen = extraCommit == null ? 0 : extraCommit.Length;
             var gens = Generators();
             var scratch = secp256k1_scratch_space_create(Context, Constant.SCRATCH_SPACE_SIZE);
 
@@ -97,7 +97,7 @@ namespace Secp256k1_ZKP.Net
                             64,
                             Constant.GENERATOR_H,
                             extraCommit,
-                            0) == 1;
+                            extraCommitLen) == 1;
 
             _ = secp256k1_scratch_space_destroy(scratch);
 
