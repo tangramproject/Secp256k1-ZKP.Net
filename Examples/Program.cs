@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 using Secp256k1_ZKP.Net;
 
@@ -15,19 +13,19 @@ namespace Examples
 
         static void Main(string[] args)
         {
-
             using (var secp256k1 = new Secp256k1())
             using (var pedersen = new Pedersen())
             using (var bulletProof = new BulletProof())
             {
-                ulong value = 12234;
+                // Correct valu
+                int minValue = 1000;
+                ulong value = 1000;
                 var blinding = secp256k1.GetSecretKey();
                 var commit = pedersen.Commit(value, blinding);
-                var @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), null, null);
-                var verified = bulletProof.Verify(commit, @struct.proof, null);
+                var @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
+                var success = bulletProof.Verify(commit, @struct.proof, null);
 
             }
-
         }
 
         static void TestToPublicKey()

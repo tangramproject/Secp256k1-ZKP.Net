@@ -21,7 +21,7 @@ namespace Secp256k1_ZKP.Net
             return secp256k1_bulletproof_generators_create(Context, Constant.GENERATOR_G, 256);
         }
 
-        public ProofStruct ProofSingle(ulong value, byte[] blind, byte[] nonce, byte[] rewindNonce, byte[] extraCommit, byte[] msg)
+        public ProofStruct ProofSingle(ulong value, byte[] blind, byte[] nonce, byte[] rewindNonce, byte[] extraCommit, byte[] msg, int mValue = 0)
         {
             byte[] proof = new byte[Constant.MAX_PROOF_SIZE];
             int plen = Constant.MAX_PROOF_SIZE;
@@ -40,6 +40,14 @@ namespace Secp256k1_ZKP.Net
             IntPtr[] values = new IntPtr[1];
             values[0] = (IntPtr)value;
 
+            IntPtr[] mvalues = null;
+
+            if(mValue != 0)
+            {
+                mvalues = new IntPtr[1];
+                mvalues[0] = (IntPtr)mValue;
+            }
+
             var gens = Generators();
             var scratch = secp256k1_scratch_space_create(Context, Constant.SCRATCH_SPACE_SIZE);
             var result = secp256k1_bulletproof_rangeproof_prove(
@@ -52,7 +60,7 @@ namespace Secp256k1_ZKP.Net
                             t_one,
                             t_two,
                             values,
-                            IntPtr.Zero,
+                            mvalues,
                             blinds,
                             commits,
                             1,
@@ -79,11 +87,19 @@ namespace Secp256k1_ZKP.Net
             return new ProofInfoStruct();
         }
 
-        public bool Verify(byte[] commit, byte[] proof, byte[] extraCommit)
+        public bool Verify(byte[] commit, byte[] proof, byte[] extraCommit, int mValue = 0)
         {
             var extraCommitLen = extraCommit == null ? 0 : extraCommit.Length;
             var gens = Generators();
             var scratch = secp256k1_scratch_space_create(Context, Constant.SCRATCH_SPACE_SIZE);
+
+            IntPtr[] mvalues = null;
+
+            if (mValue != 0)
+            {
+                mvalues = new IntPtr[1];
+                mvalues[0] = (IntPtr)mValue;
+            }
 
             bool success = secp256k1_bulletproof_rangeproof_verify(
                             Context,
@@ -91,7 +107,7 @@ namespace Secp256k1_ZKP.Net
                             gens,
                             proof,
                             proof.Length,
-                            IntPtr.Zero,
+                            mvalues,
                             commit,
                             1,
                             64,

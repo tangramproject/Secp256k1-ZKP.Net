@@ -241,7 +241,7 @@ namespace Secp256k1_ZKP.Net.Test
             using (var bulletProof = new BulletProof())
             {
                 // Correct value
-                ulong value = 12234;
+                ulong value = 300;
                 var blinding = secp256k1.GetSecretKey();
                 var commit = pedersen.Commit(value, blinding);
                 var @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
@@ -263,6 +263,33 @@ namespace Secp256k1_ZKP.Net.Test
                 blinding = secp256k1.GetSecretKey();
                 @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
                 success = bulletProof.Verify(commit, @struct.proof, null);
+
+                Assert.False(success);
+            }
+        }
+
+        [Fact]
+        public void Bullet_Proof_Minimum_Amount()
+        {
+            using (var secp256k1 = new Secp256k1())
+            using (var pedersen = new Pedersen())
+            using (var bulletProof = new BulletProof())
+            {
+                int minValue = 1000;
+                ulong value = 300;
+
+                // Correct value and minimum value
+                var blinding = secp256k1.GetSecretKey();
+                var commit = pedersen.Commit(value, blinding);
+                var @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
+                var success = bulletProof.Verify(commit, @struct.proof, null);
+
+                Assert.True(success);
+
+                // Wrong value < 1000 and minimum value.
+                var commitWrong = pedersen.Commit(value, blinding);
+                @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null, minValue);
+                success = bulletProof.Verify(commit, @struct.proof, null, minValue);
 
                 Assert.False(success);
             }
