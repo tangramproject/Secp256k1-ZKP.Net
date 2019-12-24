@@ -32,7 +32,9 @@
     <None Remove="Examples\bin\Debug\netcoreapp2.2\Examples.deps.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2"><PrivateAssets>all</PrivateAssets>
+<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+</PackageReference>
     <PackageReference Include="Secp256k1.ZKP" Version="1.0.8" />
   </ItemGroup>
 </Project>
