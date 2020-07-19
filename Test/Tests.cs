@@ -14,7 +14,7 @@ namespace Test
             using (var secp256k1 = new Secp256k1())
             using (var pedersen = new Pedersen())
             {
-                var commit = pedersen.Commit(5, secp256k1.GetSecretKey());
+                var commit = pedersen.Commit(5, secp256k1.CreatePrivateKey());
                 var parsed = pedersen.CommitParse(commit);
                 var ser = pedersen.CommitSerialize(parsed);
 
@@ -54,7 +54,7 @@ namespace Test
                     return pedersen.Commit(value, blinding);
                 }
 
-                var oneKey = secp256k1.GetSecretKey();
+                var oneKey = secp256k1.CreatePrivateKey();
 
                 Assert.True(pedersen.VerifyCommitSum(new List<byte[]> { Commit(5, oneKey) }, new List<byte[]> { Commit(5, oneKey) }));
 
@@ -79,8 +79,8 @@ namespace Test
                     return pedersen.Commit(value, blinding);
                 }
 
-                var blindPos = secp256k1.GetSecretKey();
-                var blindNeg = secp256k1.GetSecretKey();
+                var blindPos = secp256k1.CreatePrivateKey();
+                var blindNeg = secp256k1.CreatePrivateKey();
 
                 var blindSum = pedersen.BlindSum(new List<byte[]> { blindPos }, new List<byte[]> { blindNeg });
 
@@ -102,8 +102,8 @@ namespace Test
                 ulong posValue = 101;
                 ulong negValue = 75;
 
-                var blindPos = pedersen.BlindSwitch(posValue, secp256k1.GetSecretKey());
-                var blindNeg = pedersen.BlindSwitch(negValue, secp256k1.GetSecretKey());
+                var blindPos = pedersen.BlindSwitch(posValue, secp256k1.CreatePrivateKey());
+                var blindNeg = pedersen.BlindSwitch(negValue, secp256k1.CreatePrivateKey());
 
                 var blindSum = pedersen.BlindSum(new List<byte[]> { blindPos }, new List<byte[]> { blindNeg });
 
@@ -119,7 +119,7 @@ namespace Test
             using (var secp256k1 = new Secp256k1())
             using (var pedersen = new Pedersen())
             {
-                var blinding = secp256k1.GetSecretKey();
+                var blinding = secp256k1.CreatePrivateKey();
                 var commit = pedersen.Commit(5, blinding);
                 var pubKey = pedersen.ToPublicKey(commit);
 
@@ -138,7 +138,7 @@ namespace Test
                     return BitConverter.ToString(data).Replace("-", string.Empty);
                 }
 
-                var blinding = secp256k1.GetSecretKey();
+                var blinding = secp256k1.CreatePrivateKey();
                 var commit = pedersen.Commit(0, blinding);
 
                 var msg = "Message for signing";
@@ -151,7 +151,7 @@ namespace Test
 
                 Assert.True(secp256k1.Verify(sig, msgHash, pubKey));
 
-                var actualPubKey = secp256k1.PublicKeyCreate(blinding);
+                var actualPubKey = secp256k1.CreatePublicKey(blinding);
 
                 Assert.Equal(ToHex(pubKey), ToHex(actualPubKey));
             }
@@ -168,8 +168,8 @@ namespace Test
                     return BitConverter.ToString(data).Replace("-", string.Empty);
                 }
 
-                var blindA = secp256k1.GetSecretKey();
-                var blindB = secp256k1.GetSecretKey();
+                var blindA = secp256k1.CreatePrivateKey();
+                var blindB = secp256k1.CreatePrivateKey();
 
                 var commitA = pedersen.Commit(3, blindA);
 
@@ -200,7 +200,7 @@ namespace Test
             using (var pedersen = new Pedersen())
             using (var rangeProof = new RangeProof())
             {
-                var blinding = secp256k1.GetSecretKey();
+                var blinding = secp256k1.CreatePrivateKey();
                 var commit = pedersen.Commit(9, blinding);
                 var msg = "Message for signing";
                 var msgBytes = Encoding.UTF8.GetBytes(msg);
@@ -219,7 +219,7 @@ namespace Test
                 Assert.Equal(0, (long)proofInfo.min);
                 Assert.Equal(9, (long)proofInfo.value);
 
-                var badNonce = secp256k1.GetSecretKey();
+                var badNonce = secp256k1.CreatePrivateKey();
                 var badInfo = rangeProof.Rewind(commit, proof, badNonce);
                 Assert.False(badInfo.success);
                 Assert.Equal(0, (long)badInfo.value);
@@ -243,7 +243,7 @@ namespace Test
             {
                 // Correct value
                 ulong value = 300;
-                var blinding = secp256k1.GetSecretKey();
+                var blinding = secp256k1.CreatePrivateKey();
                 var commit = pedersen.Commit(value, blinding);
                 var @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
                 var success = bulletProof.Verify(commit, @struct.proof, null);
@@ -261,7 +261,7 @@ namespace Test
                 // Wrong binding
                 value = 122322;
                 commit = pedersen.Commit(value, blinding);
-                blinding = secp256k1.GetSecretKey();
+                blinding = secp256k1.CreatePrivateKey();
                 @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
                 success = bulletProof.Verify(commit, @struct.proof, null);
 
@@ -280,7 +280,7 @@ namespace Test
                 ulong value = 300;
 
                 // Correct value and minimum value
-                var blinding = secp256k1.GetSecretKey();
+                var blinding = secp256k1.CreatePrivateKey();
                 var commit = pedersen.Commit(value, blinding);
                 var @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
                 var success = bulletProof.Verify(commit, @struct.proof, null);
@@ -304,7 +304,7 @@ namespace Test
             using (var bulletProof = new BulletProof())
             {
                 var extraCommit = new byte[32];
-                var blinding = secp256k1.GetSecretKey();
+                var blinding = secp256k1.CreatePrivateKey();
                 ulong value = 100033;
                 var commit = pedersen.Commit(value, blinding);
                 var @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), extraCommit, null);
@@ -323,7 +323,7 @@ namespace Test
             {
                 // Correct extra commit
                 var extraCommit = new byte[32];
-                var blinding = secp256k1.GetSecretKey();
+                var blinding = secp256k1.CreatePrivateKey();
                 ulong value = 100033;
                 var commit = pedersen.Commit(value, blinding);
                 var @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), extraCommit, null);

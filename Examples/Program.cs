@@ -20,7 +20,7 @@ namespace Examples
                 // Correct valu
                 int minValue = 1000;
                 ulong value = 1000;
-                var blinding = secp256k1.GetSecretKey();
+                var blinding = secp256k1.CreatePrivateKey();
                 var commit = pedersen.Commit(value, blinding);
                 var @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
                 var success = bulletProof.Verify(commit, @struct.proof, null);
@@ -33,7 +33,7 @@ namespace Examples
             using (var secp256k1 = new Secp256k1())
             using (var pedersen = new Pedersen())
             {
-                var blinding = secp256k1.GetSecretKey();
+                var blinding = secp256k1.CreatePrivateKey();
                 var commitPos = pedersen.Commit(0, blinding);
                 var commitNeg = pedersen.Commit(0, blinding);
 
@@ -50,7 +50,7 @@ namespace Examples
                 var pubKey = pedersen.ToPublicKey(commitSum);
 
                 var verified1 = secp256k1.Verify(sig, msgHash, pubKey);
-                var pub = secp256k1.PublicKeyCreate(blinding);
+                var pub = secp256k1.CreatePublicKey(blinding);
             }
         }
 
@@ -60,7 +60,7 @@ namespace Examples
             using (var pedersen = new Pedersen())
             using (var rangeProof = new RangeProof())
             {
-                var blinding = secp256k1.GetSecretKey();
+                var blinding = secp256k1.CreatePrivateKey();
                 var commit = pedersen.Commit(100, blinding);
                 var msg = "Message for signing";
                 var msgBytes = Encoding.UTF8.GetBytes(msg);
@@ -71,7 +71,7 @@ namespace Examples
 
                 proofInfo = rangeProof.Rewind(commit, proof, blinding);
 
-                var badNonce = secp256k1.GetSecretKey();
+                var badNonce = secp256k1.CreatePrivateKey();
                 var badInfo = rangeProof.Rewind(commit, proof, badNonce);
 
                 commit = pedersen.Commit(0, blinding);
@@ -87,7 +87,7 @@ namespace Examples
             using (var pedersen = new Pedersen())
             using (var rangeProof = new RangeProof())
             {
-                var blinding = secp256k1.GetSecretKey();
+                var blinding = secp256k1.CreatePrivateKey();
 
                 ulong posValue = NaT(3434545);
                 ulong negValue = NaT(1.123456789123456789);
