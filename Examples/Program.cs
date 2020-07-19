@@ -22,7 +22,7 @@ namespace Examples
                 ulong value = 1000;
                 var blinding = secp256k1.GetSecretKey();
                 var commit = pedersen.Commit(value, blinding);
-                var @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
+                var @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
                 var success = bulletProof.Verify(commit, @struct.proof, null);
 
             }

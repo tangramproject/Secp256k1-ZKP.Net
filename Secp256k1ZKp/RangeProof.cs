@@ -62,10 +62,10 @@ namespace Secp256k1Zkp
         /// <param name="msg">Message.</param>
         public ProofStruct Proof(ulong min, ulong value, byte[] blind, byte[] commit, byte[] msg)
         {
-            if (blind.Length < Constant.BLIND_LENGTH)
+            if (blind.Length != Constant.BLIND_LENGTH)
                 throw new ArgumentException($"{nameof(blind)} must be {Constant.BLIND_LENGTH} bytes");
 
-            if (commit.Length < Constant.PEDERSEN_COMMITMENT_SIZE)
+            if (commit.Length != Constant.PEDERSEN_COMMITMENT_SIZE)
                 throw new ArgumentException($"{nameof(commit)} must be {Constant.PEDERSEN_COMMITMENT_SIZE} bytes");
 
             bool success = false;
@@ -114,7 +114,7 @@ namespace Secp256k1Zkp
             byte[] secretKey = new byte[32];
 
             using (var secp256k1 = new Secp256k1())
-                secretKey = secp256k1.GetSecretKey();
+                secretKey = secp256k1.CreatePrivateKey();
 
             var success = secp256k1_rangeproof_info(
                             Context,

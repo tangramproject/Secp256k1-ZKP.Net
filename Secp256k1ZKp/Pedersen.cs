@@ -18,12 +18,32 @@ namespace Secp256k1Zkp
         /// <summary>
         /// Commit the specified value and blind.
         /// </summary>
+        /// <param name="value"></param>
+        /// <param name="blind"></param>
+        /// <returns></returns>
+        public byte[] BlinCommit(byte[] value, byte[] blind)
+        {
+            if (blind.Length != Constant.BLIND_LENGTH)
+                throw new ArgumentException($"{nameof(blind)} must be {Constant.BLIND_LENGTH} bytes");
+
+            //if (value.Length < Constant.BLIND_LENGTH)
+            //    throw new ArgumentException($"{nameof(value)} must be {Constant.BLIND_LENGTH} bytes");
+
+            var commit = new byte[Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL];
+            return secp256k1_pedersen_blind_commit(Context, commit, blind, value, Constant.GENERATOR_H, Constant.GENERATOR_G) == 1
+                ? CommitSerialize(commit)
+                : null;
+        }
+
+        /// <summary>
+        /// Commit the specified value and blind.
+        /// </summary>
         /// <returns>The commit.</returns>
         /// <param name="value">Value.</param>
         /// <param name="blind">Blind.</param>
         public byte[] Commit(ulong value, byte[] blind)
         {
-            if (blind.Length < Constant.BLIND_LENGTH)
+            if (blind.Length != Constant.BLIND_LENGTH)
                 throw new ArgumentException($"{nameof(blind)} must be {Constant.BLIND_LENGTH} bytes");
 
             var commit = new byte[Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL];
@@ -39,7 +59,7 @@ namespace Secp256k1Zkp
         /// <param name="input">Input.</param>
         public byte[] CommitParse(byte[] input)
         {
-            if (input.Length < Constant.PEDERSEN_COMMITMENT_SIZE)
+            if (input.Length != Constant.PEDERSEN_COMMITMENT_SIZE)
                 throw new ArgumentException($"{nameof(input)} must be {Constant.PEDERSEN_COMMITMENT_SIZE} bytes");
 
             var output = new byte[Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL];
@@ -53,7 +73,7 @@ namespace Secp256k1Zkp
         /// <param name="commit">Commit.</param>
         public byte[] CommitSerialize(byte[] commit)
         {
-            if (commit.Length < Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL)
+            if (commit.Length != Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL)
                 throw new ArgumentException($"{nameof(commit)} must be {Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL} bytes");
 
             var output = new byte[Constant.PEDERSEN_COMMITMENT_SIZE];
@@ -66,12 +86,18 @@ namespace Secp256k1Zkp
         /// <returns>The sum.</returns>
         /// <param name="positive">Positive.</param>
         /// <param name="negative">Negative.</param>
-        public byte[] BlindSum(IEnumerable<byte[]> positive, IEnumerable<byte[]> negative)
+        public byte[] BlindSum(IEnumerable<byte[]> positives, IEnumerable<byte[]> negatives)
         {
-            var blindOut = new byte[Constant.SECRET_KEY_SIZE];
-            var all = new List<byte[]>(positive);
+            if (positives == null)
+                throw new ArgumentNullException("Positives cannot be null.");
 
-            all.AddRange(negative);
+            if (negatives == null)
+                throw new ArgumentNullException("Negatives cannot be null.");
+
+            var blindOut = new byte[Constant.SECRET_KEY_SIZE];
+            var all = new List<byte[]>(positives);
+
+            all.AddRange(negatives);
 
             var ptrs = new IntPtr[all.Count()];
 
@@ -82,7 +108,7 @@ namespace Secp256k1Zkp
                 ptrs[i] = ptr;
             }
 
-            return secp256k1_pedersen_blind_sum(Context, blindOut, ptrs, (uint)all.Count(), (uint)positive.Count()) == 1
+            return secp256k1_pedersen_blind_sum(Context, blindOut, ptrs, (uint)all.Count(), (uint)positives.Count()) == 1
                 ? blindOut
                 : null;
         }
@@ -95,7 +121,7 @@ namespace Secp256k1Zkp
         /// <param name="blind">Blind.</param>
         public byte[] BlindSwitch(ulong value, byte[] blind)
         {
-            if (blind.Length < Constant.BLIND_LENGTH)
+            if (blind.Length != Constant.BLIND_LENGTH)
                 throw new ArgumentException($"{nameof(blind)} must be {Constant.BLIND_LENGTH} bytes");
 
             var blindSwitch = new byte[Constant.SECRET_KEY_SIZE];
@@ -113,6 +139,12 @@ namespace Secp256k1Zkp
         /// <param name="negatives">Negatives.</param>
         public bool VerifyCommitSum(IEnumerable<byte[]> positives, IEnumerable<byte[]> negatives)
         {
+            if (positives == null)
+                throw new ArgumentNullException("Positives cannot be null.");
+
+            if (negatives == null)
+                throw new ArgumentNullException("Negatives cannot be null.");
+
             var pos = new IntPtr[positives.Count()];
             var neg = new IntPtr[negatives.Count()];
             var i = 0;
@@ -147,6 +179,12 @@ namespace Secp256k1Zkp
         /// <param name="negatives">Negatives.</param>
         public byte[] CommitSum(IEnumerable<byte[]> positives, IEnumerable<byte[]> negatives)
         {
+            if (positives == null)
+                throw new ArgumentNullException("Positives cannot be null.");
+
+            if (negatives == null)
+                throw new ArgumentNullException("Negatives cannot be null.");
+
             var commitOut = new byte[Constant.PEDERSEN_COMMITMENT_SIZE_INTERNAL];
             var pos = new IntPtr[positives.Count()];
             var neg = new IntPtr[negatives.Count()];
@@ -182,13 +220,16 @@ namespace Secp256k1Zkp
         /// <param name="commit">Commit.</param>
         public byte[] ToPublicKey(byte[] commit)
         {
-            if (commit.Length < Constant.PEDERSEN_COMMITMENT_SIZE)
+            if (commit.Length != Constant.PEDERSEN_COMMITMENT_SIZE)
                 throw new ArgumentException($"{nameof(commit)} must be {Constant.PEDERSEN_COMMITMENT_SIZE} bytes");
 
             var pubOut = new byte[Constant.PUBLIC_KEY_SIZE];
             return secp256k1_pedersen_commitment_to_pubkey(Context, pubOut, commit) == 1 ? pubOut : null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose()
         {
             if (Context != IntPtr.Zero)

@@ -1,9 +1,9 @@
 ﻿using System;
-using static Secp256k1ZKP.Secp256k1Native;
-using static Secp256k1ZKP.BulletProofNative;
+using static Secp256k1Zkp.Secp256k1Native;
+using static Secp256k1Zkp.BulletProofNative;
 using System.Runtime.InteropServices;
 
-namespace Secp256k1ZKP
+namespace Secp256k1Zkp
 {
     public class BulletProof : IDisposable
     {
@@ -19,7 +19,7 @@ namespace Secp256k1ZKP
             return secp256k1_bulletproof_generators_create(Context, Constant.GENERATOR_G, 256);
         }
 
-        public ProofStruct ProofSingle(ulong value, byte[] blind, byte[] nonce, byte[] rewindNonce, byte[] extraCommit, byte[] msg, int mValue = 0)
+        public ProofStruct GenProof(ulong value, byte[] blind, byte[] nonce, byte[] rewindNonce, byte[] extraCommit, byte[] msg, int mValue = 0)
         {
             byte[] proof = new byte[Constant.MAX_PROOF_SIZE];
             int plen = Constant.MAX_PROOF_SIZE;

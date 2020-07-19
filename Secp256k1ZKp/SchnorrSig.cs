@@ -1,17 +1,17 @@
 ﻿using System;
 using static Secp256k1Zkp.Secp256k1Native;
-using static Secp256k1Zkp.SchnorrSigNative;
+using static Secp256k1Zkp.SchnorrNative;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Secp256k1Zkp
 {
-    public class SchnorrSig : IDisposable
+    public class Schnorr : IDisposable
     {
         public IntPtr Context { get; private set; }
 
-        public SchnorrSig()
+        public Schnorr()
         {
             Context = secp256k1_context_create((uint)(Flags.SECP256K1_CONTEXT_SIGN | Flags.SECP256K1_CONTEXT_VERIFY));
         }
@@ -21,9 +21,9 @@ namespace Secp256k1Zkp
         /// </summary>
         /// <param name="sig">Pointer to the signature.</param>
         /// <returns>Signature could be serialize, null otherwise.</returns>
-        public byte[] SchnorrsigSerialize(byte[] sig)
+        public byte[] Serialize(byte[] sig)
         {
-            if (sig.Length < Constant.SIGNATURE_SIZE)
+            if (sig.Length != Constant.SIGNATURE_SIZE)
                 throw new ArgumentException($"{nameof(sig)} must be {Constant.SIGNATURE_SIZE} bytes");
 
             var out64 = new byte[Constant.SIGNATURE_SIZE];
@@ -35,9 +35,9 @@ namespace Secp256k1Zkp
         /// </summary>
         /// <param name="sig">Pointer to the 64-byte signature to be parsed.</param>
         /// <returns>Signature could be parsed, null otherwise.</returns>
-        public byte[] SchnorrsigParse(byte[] sig)
+        public byte[] Parse(byte[] sig)
         {
-            if (sig.Length < Constant.SIGNATURE_SIZE)
+            if (sig.Length != Constant.SIGNATURE_SIZE)
                 throw new ArgumentException($"{nameof(sig)} must be {Constant.SIGNATURE_SIZE} bytes");
 
             var out64 = new byte[Constant.SIGNATURE_SIZE];
@@ -50,12 +50,12 @@ namespace Secp256k1Zkp
         /// <param name="msg32">The 32-byte message hash being signed.</param>
         /// <param name="seckey">The 32-byte secret key.</param>
         /// <returns>Signature if successfully. Otherwaise null.</returns>
-        public byte[] SchnorrsigSign(byte[] msg32, byte[] seckey)
+        public byte[] Sign(byte[] msg32, byte[] seckey)
         {
-            if (msg32.Length < Constant.MESSAGE_SIZE)
+            if (msg32.Length != Constant.MESSAGE_SIZE)
                 throw new ArgumentException($"{nameof(msg32)} must be {Constant.MESSAGE_SIZE} bytes");
 
-            if (seckey.Length < Constant.SECRET_KEY_SIZE)
+            if (seckey.Length != Constant.SECRET_KEY_SIZE)
                 throw new ArgumentException($"{nameof(seckey)} must be {Constant.SECRET_KEY_SIZE} bytes");
 
             int nonce_is_negated = 0;
@@ -70,15 +70,15 @@ namespace Secp256k1Zkp
         /// <param name="msg32">The 32-byte message hash being verified.</param>
         /// <param name="pubkey">The public key to verify with.</param>
         /// <returns>True if correct signature. Otherwise Fasle.</returns>
-        public bool SchnorrsigVerify(byte[] sig, byte[] msg32, byte[] pubkey)
+        public bool Verify(byte[] sig, byte[] msg32, byte[] pubkey)
         {
-            if (sig.Length < Constant.SIGNATURE_SIZE)
+            if (sig.Length != Constant.SIGNATURE_SIZE)
                 throw new ArgumentException($"{nameof(sig)} must be {Constant.SIGNATURE_SIZE} bytes");
 
-            if (msg32.Length < Constant.MESSAGE_SIZE)
+            if (msg32.Length != Constant.MESSAGE_SIZE)
                 throw new ArgumentException($"{nameof(msg32)} must be {Constant.MESSAGE_SIZE} bytes");
 
-            if (pubkey.Length < Constant.PUBLIC_KEY_SIZE)
+            if (pubkey.Length != Constant.PUBLIC_KEY_SIZE)
                 throw new ArgumentException($"{nameof(pubkey)} must be {Constant.PUBLIC_KEY_SIZE} bytes");
 
             return secp256k1_schnorrsig_verify(Context, sig, msg32, pubkey) == 1;
@@ -91,7 +91,7 @@ namespace Secp256k1Zkp
         /// <param name="msgs32">Array of messages.</param>
         /// <param name="pubKeys">Array of public keys.</param>
         /// <returns></returns>
-        public bool SchnorrsigVerifyBatch(IEnumerable<byte[]> sigs, IEnumerable<byte[]> msgs32, IEnumerable<byte[]> pubKeys)
+        public bool VerifyBatch(IEnumerable<byte[]> sigs, IEnumerable<byte[]> msgs32, IEnumerable<byte[]> pubKeys)
         {
             if (sigs?.Any() != true || msgs32?.Any() != true || pubKeys?.Any() != true)
                 return false;
@@ -138,6 +138,9 @@ namespace Secp256k1Zkp
             return secp256k1_schnorrsig_verify_batch(Context, scratch, signatures, messages, publicKeys, (uint)signatures.Length) == 1;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose()
         {
             if (Context != IntPtr.Zero)
@@ -146,5 +149,6 @@ namespace Secp256k1Zkp
                 Context = IntPtr.Zero;
             }
         }
+
     }
 }

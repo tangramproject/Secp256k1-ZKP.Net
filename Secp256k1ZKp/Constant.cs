@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Secp256k1ZKP
+namespace Secp256k1Zkp
 {
     public static class Constant
     {
