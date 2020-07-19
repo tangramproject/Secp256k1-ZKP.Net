@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard21</TargetFramework>
     <RootNamespace>Secp256k1Zkp</RootNamespace>
-    <PackageId>Secp256k1.ZKP.Net</PackageId>
-    <PackageVersion>1.0.8</PackageVersion>
+    <PackageId>Secp256k1Zkp</PackageId>
+    <PackageVersion>1.0.9</PackageVersion>
     <Authors>pingpongsneak</Authors>
     <PackageIconUrl>https://avatars1.githubusercontent.com/u/37107370</PackageIconUrl>
     <NeutralLanguage>en-ZA</NeutralLanguage>
