@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Secp256k1Zkp;
 using Xunit;
 
-namespace Secp256k1_ZKP.Net.Test
+namespace Test
 {
     public class Tests
     {
@@ -244,7 +245,7 @@ namespace Secp256k1_ZKP.Net.Test
                 ulong value = 300;
                 var blinding = secp256k1.GetSecretKey();
                 var commit = pedersen.Commit(value, blinding);
-                var @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
+                var @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
                 var success = bulletProof.Verify(commit, @struct.proof, null);
 
                 Assert.True(success);
@@ -252,7 +253,7 @@ namespace Secp256k1_ZKP.Net.Test
                 // Wrong value
                 value = 1222344;
                 var commitWrong = pedersen.Commit(122111, blinding);
-                @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
+                @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
                 success = bulletProof.Verify(commit, @struct.proof, null);
 
                 Assert.False(success);
@@ -261,7 +262,7 @@ namespace Secp256k1_ZKP.Net.Test
                 value = 122322;
                 commit = pedersen.Commit(value, blinding);
                 blinding = secp256k1.GetSecretKey();
-                @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
+                @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
                 success = bulletProof.Verify(commit, @struct.proof, null);
 
                 Assert.False(success);
@@ -281,14 +282,14 @@ namespace Secp256k1_ZKP.Net.Test
                 // Correct value and minimum value
                 var blinding = secp256k1.GetSecretKey();
                 var commit = pedersen.Commit(value, blinding);
-                var @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
+                var @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null);
                 var success = bulletProof.Verify(commit, @struct.proof, null);
 
                 Assert.True(success);
 
                 // Wrong value < 1000 and minimum value.
                 var commitWrong = pedersen.Commit(value, blinding);
-                @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null, minValue);
+                @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), null, null, minValue);
                 success = bulletProof.Verify(commit, @struct.proof, null, minValue);
 
                 Assert.False(success);
@@ -306,7 +307,7 @@ namespace Secp256k1_ZKP.Net.Test
                 var blinding = secp256k1.GetSecretKey();
                 ulong value = 100033;
                 var commit = pedersen.Commit(value, blinding);
-                var @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), extraCommit, null);
+                var @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), extraCommit, null);
                 var success = bulletProof.Verify(commit, @struct.proof, extraCommit);
 
                 Assert.True(success);
@@ -325,7 +326,7 @@ namespace Secp256k1_ZKP.Net.Test
                 var blinding = secp256k1.GetSecretKey();
                 ulong value = 100033;
                 var commit = pedersen.Commit(value, blinding);
-                var @struct = bulletProof.ProofSingle(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), extraCommit, null);
+                var @struct = bulletProof.GenProof(value, blinding, (byte[])blinding.Clone(), (byte[])blinding.Clone(), extraCommit, null);
                 var success = bulletProof.Verify(commit, @struct.proof, extraCommit);
 
                 Assert.True(success);

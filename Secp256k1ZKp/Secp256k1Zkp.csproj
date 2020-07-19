@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    <RootNamespace>Secp256k1_ZKP.Net</RootNamespace>
-    <PackageId>Secp256k1.ZKP.Net</PackageId>
-    <PackageVersion>1.0.8</PackageVersion>
+    <TargetFramework>netstandard21</TargetFramework>
+    <RootNamespace>Secp256k1Zkp</RootNamespace>
+    <PackageId>Secp256k1Zkp</PackageId>
+    <PackageVersion>1.0.9</PackageVersion>
     <Authors>pingpongsneak</Authors>
     <PackageIconUrl>https://avatars1.githubusercontent.com/u/37107370</PackageIconUrl>
     <NeutralLanguage>en-ZA</NeutralLanguage>
-    <PackageLicenseUrl>https://github.com/tangramproject/Secp256k1-ZKP.Net/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl>https://github.com/tangramproject/Secp256k1Zkp/blob/master/LICENSE</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Owners>Tangram Inc</Owners>
-    <PackageProjectUrl>https://github.com/tangramproject/Secp256k1-ZKP.Net</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/tangramproject/Secp256k1Zkp</PackageProjectUrl>
     <PackageTags>Secp256k1 libsecp256k1 Tangram ECDSA bitcoin Grin MimbleWimble</PackageTags>
-    <Title>Secp256k1.ZKP.Net</Title>
+    <Title>Secp256k1Zkp</Title>
     <Description>This package contains platform-specific native code builds of secp256k1. Included:win-x86/libsecp256k1.dll, win-x64/libsecp256k1.dll, osx-x64/libsecp256k1.dylib and linux-x64/libsecp256k1.so</Description>
     <PackOnBuild>true</PackOnBuild>
     <DevelopmentDependency>true</DevelopmentDependency>
@@ -35,6 +35,7 @@
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2"><PrivateAssets>all</PrivateAssets>
 <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 </PackageReference>
-    <PackageReference Include="Secp256k1.ZKP" Version="1.0.8" />
+    <PackageReference Include="Secp256k1.ZKP" Version="1.0.12" />
+    <PackageReference Include="Isopoh.Cryptography.SecureArray" Version="1.1.4" />
   </ItemGroup>
 </Project>
