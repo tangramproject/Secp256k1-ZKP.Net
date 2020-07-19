@@ -16,6 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Secp256k1-ZKP.Net\Secp256k1ZKP.csproj" />
+    <ProjectReference Include="..\Secp256k1ZKP\Secp256k1ZKP.csproj" />
   </ItemGroup>
 </Project>

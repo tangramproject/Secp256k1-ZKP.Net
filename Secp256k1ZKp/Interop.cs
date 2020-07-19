@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace Secp256k1ZKP
+namespace Secp256k1Zkp
 {
 
     [SuppressUnmanagedCodeSecurity]

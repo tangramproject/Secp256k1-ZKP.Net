@@ -1,8 +1,8 @@
 ﻿using System;
-using static Secp256k1ZKP.Secp256k1Native;
-using static Secp256k1ZKP.RangeProofNative;
+using static Secp256k1Zkp.Secp256k1Native;
+using static Secp256k1Zkp.RangeProofNative;
 
-namespace Secp256k1ZKP
+namespace Secp256k1Zkp
 {
     public struct ProofInfoStruct
     {

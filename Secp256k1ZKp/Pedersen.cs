@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using static Secp256k1ZKP.PedersenNative;
+using static Secp256k1Zkp.PedersenNative;
 
-namespace Secp256k1ZKP
+namespace Secp256k1Zkp
 {
     public class Pedersen : IDisposable
     {

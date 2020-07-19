@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Secp256k1ZKP;
+using Secp256k1Zkp;
 using Xunit;
 
 namespace Test

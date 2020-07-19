@@ -1,11 +1,11 @@
 ﻿using System;
-using static Secp256k1ZKP.Secp256k1Native;
-using static Secp256k1ZKP.SchnorrSigNative;
+using static Secp256k1Zkp.Secp256k1Native;
+using static Secp256k1Zkp.SchnorrSigNative;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Secp256k1ZKP
+namespace Secp256k1Zkp
 {
     public class SchnorrSig : IDisposable
     {

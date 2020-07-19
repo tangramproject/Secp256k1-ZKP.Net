@@ -1,7 +1,7 @@
 ﻿using System;
-using static Secp256k1ZKP.Secp256k1Native;
+using static Secp256k1Zkp.Secp256k1Native;
 
-namespace Secp256k1ZKP
+namespace Secp256k1Zkp
 {
     public struct KeyPair
     {
