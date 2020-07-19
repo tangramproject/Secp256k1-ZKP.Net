@@ -1,9 +1,9 @@
 ﻿# Secp256k1Zkp
 
-Cross platform C# wrapper for the native [secp256k1-zkp library](https://github.com/tangramproject/secp256k1-zkp/blob/master/Secp256k1.ZKP.nuspec).
+Cross platform C# wrapper for the native [libsecp256k1 library](https://github.com/pingpongsneak/libsecp256k1Zkp/blob/master/Secp256k1.ZKP.nuspec).
 
 ##**Work In Progress!**
 
 
 
-See the [tests project](https://github.com/tangramproject/Secp256k1-ZKP.Net/blob/master/Test/Tests.cs) for more complex examples.
+See the [tests project](https://github.com/pingpongsneak/Secp256k1Zkp/tree/master/Test) for more complex examples.
