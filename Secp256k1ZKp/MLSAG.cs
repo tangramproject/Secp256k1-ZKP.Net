@@ -25,7 +25,7 @@ namespace Secp256k1Zkp
             if (pk.Length < Constant.PUBLIC_KEY_COMPRESSED_SIZE)
                 throw new ArgumentException($"{nameof(pk)} must be {Constant.PUBLIC_KEY_COMPRESSED_SIZE} bytes");
 
-            if (sk.Length < Constant.BLIND_LENGTH)
+            if (sk.Length != Constant.BLIND_LENGTH)
                 throw new ArgumentException($"{nameof(sk)} must be {Constant.BLIND_LENGTH} bytes");
 
             if (pk.Length > Constant.PUBLIC_KEY_SIZE)
