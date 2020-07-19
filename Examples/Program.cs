@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using Secp256k1_ZKP.Net;
+using Secp256k1ZKP;
 
 namespace Examples
 {

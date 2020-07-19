@@ -1,7 +1,7 @@
 ﻿using System;
-using static Secp256k1_ZKP.Net.Secp256k1Native;
+using static Secp256k1ZKP.Secp256k1Native;
 
-namespace Secp256k1_ZKP.Net
+namespace Secp256k1ZKP
 {
     public class MuSig : IDisposable
     {

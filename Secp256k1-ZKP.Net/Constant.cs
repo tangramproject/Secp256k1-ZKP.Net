@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Secp256k1_ZKP.Net
+namespace Secp256k1ZKP
 {
     public static class Constant
     {

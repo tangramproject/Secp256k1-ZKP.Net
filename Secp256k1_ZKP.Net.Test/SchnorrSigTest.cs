@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Secp256k1ZKP;
 using Xunit;
 
-namespace Secp256k1_ZKP.Net.Test
+namespace Test
 {
     public class SchnorrSigTest
     {

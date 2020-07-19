@@ -1,11 +1,9 @@
 ﻿using System;
-using static Secp256k1_ZKP.Net.Secp256k1Native;
-using static Secp256k1_ZKP.Net.BulletProofNative;
-using System.Collections.Generic;
-using System.Linq;
+using static Secp256k1ZKP.Secp256k1Native;
+using static Secp256k1ZKP.BulletProofNative;
 using System.Runtime.InteropServices;
 
-namespace Secp256k1_ZKP.Net
+namespace Secp256k1ZKP
 {
     public class BulletProof : IDisposable
     {
