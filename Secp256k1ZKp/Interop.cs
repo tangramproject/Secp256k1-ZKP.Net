@@ -40,6 +40,22 @@ namespace Secp256k1Zkp
 
         [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int secp256k1_scratch_space_destroy(IntPtr scratch);
+
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_ec_pubkey_parse(IntPtr ctx, byte[] pubkey, byte[] input, int inputlen);
+
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_context_randomize(IntPtr ctx, byte[] seed32);
+
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_ecdh(IntPtr ctx, byte[] result, byte[] pubkey, byte[] privkey);
+
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_ec_pubkey_tweak_add(IntPtr ctx, byte[] pubkey, byte[] tweak);
+
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_ec_privkey_tweak_add(IntPtr ctx, byte[] seckey, byte[] tweak);
+
     }
 
     [SuppressUnmanagedCodeSecurity]
@@ -59,6 +75,9 @@ namespace Secp256k1Zkp
 
         [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int secp256k1_pedersen_blind_sum(IntPtr ctx, byte[] blind_out, IntPtr[] blinds, uint n, uint npositive);
+
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_pedersen_blind_commit(IntPtr ctx, byte[] commit, byte[] blind, byte[] value, byte[] value_gen, byte[] blind_gen);
 
         [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int secp256k1_pedersen_commit(IntPtr ctx, byte[] commit, byte[] blind, ulong value, byte[] value_gen, byte[] blind_gen);
@@ -129,7 +148,7 @@ namespace Secp256k1Zkp
     }
 
     [SuppressUnmanagedCodeSecurity]
-    internal static class SchnorrSigNative
+    internal static class SchnorrNative
     {
 #if __IOS__ || (UNITY_IOS && !UNITY_EDITOR)
             private const string nativeLibrary = "__Internal";
@@ -420,6 +439,60 @@ namespace Secp256k1Zkp
         internal static extern int secp256k1_musig_extract_secret_adaptor(IntPtr ctx, byte[] sec_adaptor32, byte[] sig, IntPtr[] partial_sigs, uint n_partial_sigs, int nonce_is_negated);
     }
 
+
+    [SuppressUnmanagedCodeSecurity]
+    internal unsafe static class MLSAGNative
+    {
+#if __IOS__ || (UNITY_IOS && !UNITY_EDITOR)
+            private const string nativeLibrary = "__Internal";
+#else
+        private const string nativeLibrary = "libsecp256k1";
+#endif
+
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_prepare_mlsag(
+            [In, Out] void* pubkeys,
+            [Out] void* blind_out,
+            int n_outs,
+            int n_blinds,
+            int n_cols,
+            int n_rows,
+            [In] IntPtr[] inputs,
+            [In] IntPtr[] outputs,
+            [In] IntPtr[] blinds);
+
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_get_keyimage(
+            IntPtr ctx,
+            byte[] output,
+            byte[] pubkey,
+            byte[] blind);
+
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_generate_mlsag(
+            IntPtr ctx,
+            [Out] void* imagekeys,
+            [Out] void* pc,
+            [Out] void* ps,
+            [In] void* nonce32,
+            [In] void* msg32,
+            int n_cols,
+            int n_rows,
+            int index,
+            [In] IntPtr[] blinds,
+            [In] void* pubkeys);
+
+        [DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int secp256k1_verify_mlsag(
+            IntPtr ctx,
+            [In] void* msg32,
+            int n_cols,
+            int n_rows,
+            [In] void* pubkeys,
+            [In] void* imagekeys,
+            [In] void* pc,
+            [In] void* ps);
+    }
 
     [Flags]
     public enum Flags : uint
